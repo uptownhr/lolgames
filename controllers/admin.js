@@ -79,3 +79,12 @@ exports.save = function (req, res){
 })
 })
 }
+
+exports.detailView = function (req, res){
+  var id = req.params.game_id
+  Game.find({_id: id}, function(err, game){
+    res.render('admin/gamelist', {
+
+    })
+  })
+}

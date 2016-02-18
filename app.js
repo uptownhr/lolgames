@@ -172,6 +172,12 @@ app.get('/admin/game', passportConf.isAdmin, adminController.display) //Display 
 app.get('/admin/game/create', passportConf.isAdmin, adminController.create)//Displays a blank form to create / saving hits POST /admin/game/save
 app.get('/admin/game/:game_id', passportConf.isAdmin, adminController.search)//Display editable form for game details / saving hits POST /admin/game/save
 app.post('/admin/game/save', passportConf.isAdmin, adminController.save)//Takes info from /admin/game/create or /admin/game/:game_id and saves to db
+
+/**
+ * Game Routes
+ */
+app.get('/game/:game_id', adminController.detailView)
+
 /**
  * Template admin routes
  */
