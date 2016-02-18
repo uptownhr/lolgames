@@ -176,7 +176,7 @@ app.post('/admin/game/save', passportConf.isAdmin, adminController.save)//Takes 
 /**
  * Game Routes
  */
-app.get('/game/:game_id', adminController.detailView)
+app.get('/game/:game_id', homeController.detailView)
 
 /**
  * Template admin routes
