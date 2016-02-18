@@ -45,6 +45,9 @@ var homeController = require('./controllers/home');
 var userController = require('./controllers/user');
 var apiController = require('./controllers/api');
 var contactController = require('./controllers/contact');
+var adminController = require('./controllers/admin');
+var adminUserController = require('./controllers/admin/user');
+var adminTemplateController = require('./controllers/admin/template');
 
 /**
  * API keys and Passport configuration.
@@ -52,9 +55,21 @@ var contactController = require('./controllers/contact');
 var passportConf = require('./config/passport');
 
 /**
+ * Init
+ */
+
+var init = require('./config/init');
+
+/**
  * Create Express server.
  */
 var app = express();
+
+/**
+ * Init stuff
+ */
+
+app.use(init.initialized)
 
 /**
  * Connect to MongoDB.
@@ -141,7 +156,21 @@ app.post('/account/password', passportConf.isAuthenticated, userController.postU
 app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 
+/**
+ * Admin Routes
+ */
+app.get('/admin', passportConf.isAdmin, adminController.index)
+app.get('/admin/users', passportConf.isAdmin, adminUserController.list)
+app.get('/admin/users/edit/:id?', passportConf.isAdmin, adminUserController.edit)
+app.get('/admin/users/delete/:id?', passportConf.isAdmin, adminUserController.delete)
+app.post('/admin/users/save', passportConf.isAdmin, adminUserController.save)
 
+/**
+ * Template admin routes
+ */
+
+app.get('/admin/template', adminTemplateController.index)
+app.post('/admin/template/save', adminTemplateController.save)
 
 
 /**

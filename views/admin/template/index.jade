@@ -1,0 +1,43 @@
+extends ../admin_layout
+
+block css
+  link(href="/bower_components/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css")
+
+block content
+    h2 template
+
+    #json
+    .btn.btn-primary Save
+
+block js
+  script(src="/bower_components/jsoneditor/dist/jsoneditor.min.js")
+
+block script
+  script.
+    json=!{JSON.stringify(data)}
+    console.log(json)
+
+    // create the editor
+    var container = document.getElementById("json");
+    var editor = new JSONEditor(container, {editable: function(node){
+      switch(node.field){
+        case '_id': return false
+          break;
+        default: return true
+      }
+    }});
+
+    editor.set(json);
+
+    // get json
+    var json = editor.get();
+
+
+    $('.btn-primary').click( function(e){
+      var data = editor.get()
+      data._csrf = "!{_csrf}"
+
+      $.post('/admin/template/save', data, function(res){
+        console.log(res)
+      })
+    })

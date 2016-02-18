@@ -1,0 +1,31 @@
+extends ../admin_layout
+
+block content
+    h2 User List
+        | -
+        small
+            a(href="/admin/users/edit") Add
+
+    table.table
+        tr
+            th Picture
+            th Email
+            th Name
+            th Gender
+            th Location
+            th Website
+            th Action
+
+        each user in users
+            tr
+                td
+                    img(src="#{user.gravatar()}")
+                td= user.email
+                td= user.profile.name
+                td= user.profile.gender
+                td= user.profile.location
+                td= user.profile.website
+                td
+                    a(href="/admin/users/edit/#{user._id}") Edit
+                    |  |
+                    a(href="/admin/users/delete/#{user._id}")  Delete

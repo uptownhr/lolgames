@@ -1,0 +1,37 @@
+extends ../admin_layout
+
+block content
+    if editing
+        h2 Editing
+            small= data.profile.email
+    else
+        h2 Creating user
+
+    form.form-horizontal(method="POST" action="/admin/users/save")
+        input(type='hidden', name='_csrf', value=_csrf)
+        input(type="hidden" name="id" value=data._id)
+        .form-group
+            label.col-sm-2 Email Address
+            .col-sm-10
+                input.form-control(type="email" placeholder="email" name="email" value=data.email)
+        .form-group
+            label.col-sm-2 Profile Name
+            .col-sm-10
+                input.form-control(type="text" placeholder="Profile Name" name="name" value=profile.name)
+        .form-group
+            label.col-sm-2 Profile Gender
+            .col-sm-10
+                select.form-control(name="gender")
+                    option(value="male" selected=profile.gender == 'male') Male
+                    option(value="female" selected=profile.gender == 'female') Female
+        .form-group
+            label.col-sm-2 Location
+            .col-sm-10
+                input.form-control(type="text" placeholder="Location" name="location" value=profile.location)
+        .form-group
+            label.col-sm-2 Website
+            .col-sm-10
+                input.form-control(type="text" placeholder="Website" name="website" value=profile.website)
+        .form-group
+            .col-sm-offset-2.col-sm-10
+                button.btn.btn-default(type="submit") Save

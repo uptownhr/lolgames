@@ -6,6 +6,7 @@
     "url": "https://github.com/sahat/hackathon-starter.git"
   },
   "scripts": {
+    "prestart": "cd public && bower install",
     "start": "node-dev app.js",
     "test": "mocha --reporter spec --timeout 5000"
   },
@@ -14,6 +15,7 @@
     "bcrypt-nodejs": "^0.0.3",
     "bitgo": "0.11.64",
     "body-parser": "^1.15.0",
+    "bower": "^1.7.7",
     "cheerio": "^0.20.0",
     "clockwork": "^0.1.0",
     "compression": "^1.6.1",

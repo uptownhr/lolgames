@@ -1,0 +1,19 @@
+{
+  "name": "public",
+  "version": "0.0.0",
+  "homepage": "https://github.com/uptownhr/resume",
+  "authors": [
+    "James Lee <uptownhr@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jsoneditor": "~4.2.1"
+  }
+}
