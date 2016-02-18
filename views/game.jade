@@ -1,0 +1,19 @@
+extends admin/admin_layout
+
+block content
+  table(border='10px solid black', style = 'width: 100%')
+    tr
+      td
+        h2 NAME
+      td
+        h2 STATUS
+      td
+        h2 START DATE
+    each g in game
+      tr
+        td
+          p=g.name
+        td
+          p=g.status
+        td
+          p=g.startDate

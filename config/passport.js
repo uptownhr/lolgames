@@ -510,10 +510,10 @@ exports.isAuthorized = function(req, res, next) {
  */
 
 exports.isAdmin = function(req, res, next){
+  console.log(req.user, req.isAuthenticated() );
   if( req.isAuthenticated() && req.user.role == 'admin' ){
     next();
   }else{
-    console.log(req.user, 'wtf----',req.user.role, 'admin', req.isAuthenticated(), req.user.tokens );
     req.session.returnTo = req.path
     res.redirect('/login');
   }

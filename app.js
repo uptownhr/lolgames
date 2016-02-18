@@ -166,6 +166,13 @@ app.get('/admin/users/delete/:id?', passportConf.isAdmin, adminUserController.de
 app.post('/admin/users/save', passportConf.isAdmin, adminUserController.save)
 
 /**
+ * Admin/Game Routes
+ */
+app.get('/admin/game', passportConf.isAdmin, adminController.display) //Display list of games on a table with game details( name, status, startdate)
+app.get('/admin/game/create', passportConf.isAdmin, adminController.create)//Displays a blank form to create / saving hits POST /admin/game/save
+app.get('/admin/game/:game_id', passportConf.isAdmin, adminController.search)//Display editable form for game details / saving hits POST /admin/game/save
+app.post('/admin/game/save', passportConf.isAdmin, adminController.save)//Takes info from /admin/game/create or /admin/game/:game_id and saves to db
+/**
  * Template admin routes
  */
 

@@ -17,6 +17,10 @@
           a(href='/admin/template') Template
         li(class=title=='Users'?'active':undefined)
           a(href='/admin/users') Admin Users
+        li(class=title == 'Games' ? 'active' : undefined)
+          a(href='/admin/game') Game List
+        li(class=title == 'Games' ? 'active' : undefined)
+          a(href='/admin/game/create') Create Game
       ul.nav.navbar-nav.navbar-right
         if !user
           li(class=title=='Login'?'active':undefined)
