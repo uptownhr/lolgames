@@ -62,7 +62,7 @@ exports.search = function (req, res){
     delete data.__values__
 
     res.render('admin/template/index', {
-      data:data
+      data:data,
     })
   })
 }
