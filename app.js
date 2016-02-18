@@ -30,6 +30,14 @@ var upload = multer({ dest: path.join(__dirname, 'uploads') });
  */
 dotenv.load({ path: '.env.example' });
 
+
+/**
+ * Models
+ */
+
+var Game = require('./models/Game');
+var User = require('./models/User');
+
 /**
  * Controllers (route handlers).
  */
@@ -89,7 +97,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(function(req, res, next) {
-  if (req.path === '/api/upload') {
+  return next()
+  var api_path = /^\/api.*\//
+  console.log(req.path)
+  if ( api_path.test(req.path) ) {
     next();
   } else {
     lusca.csrf()(req, res, next);
@@ -130,40 +141,263 @@ app.post('/account/password', passportConf.isAuthenticated, userController.postU
 app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 
+
+
+
 /**
- * API examples routes.
+ * Game related API
  */
-app.get('/api', apiController.getApi);
-app.get('/api/lastfm', apiController.getLastfm);
-app.get('/api/nyt', apiController.getNewYorkTimes);
-app.get('/api/aviary', apiController.getAviary);
-app.get('/api/steam', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getSteam);
-app.get('/api/stripe', apiController.getStripe);
-app.post('/api/stripe', apiController.postStripe);
-app.get('/api/scraping', apiController.getScraping);
-app.get('/api/twilio', apiController.getTwilio);
-app.post('/api/twilio', apiController.postTwilio);
-app.get('/api/clockwork', apiController.getClockwork);
-app.post('/api/clockwork', apiController.postClockwork);
-app.get('/api/foursquare', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getFoursquare);
-app.get('/api/tumblr', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getTumblr);
-app.get('/api/facebook', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getFacebook);
-app.get('/api/github', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getGithub);
-app.get('/api/twitter', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getTwitter);
-app.post('/api/twitter', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.postTwitter);
-app.get('/api/venmo', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getVenmo);
-app.post('/api/venmo', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.postVenmo);
-app.get('/api/linkedin', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getLinkedin);
-app.get('/api/instagram', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getInstagram);
-app.get('/api/yahoo', apiController.getYahoo);
-app.get('/api/paypal', apiController.getPayPal);
-app.get('/api/paypal/success', apiController.getPayPalSuccess);
-app.get('/api/paypal/cancel', apiController.getPayPalCancel);
-app.get('/api/lob', apiController.getLob);
-app.get('/api/bitgo', apiController.getBitGo);
-app.post('/api/bitgo', apiController.postBitGo);
-app.get('/api/upload', apiController.getFileUpload);
-app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
+app.get('/api/game/list', function(req,res){
+  Game.find( function(err, games){
+    res.send(games)
+  })
+})
+app.post('/api/game/create', function(req,res){
+  var body = req.body
+
+  var game = new Game({
+    name: body.name,
+    startDate: body.startDate
+  });
+
+  game.save( function(err, saved){
+    if(err) return res.send(err)
+    res.send(saved)
+  })
+})
+
+app.post('/api/game/:game_id/join', passportConf.isAuthenticated, function(req,res){
+  var game_id = req.params.game_id,
+    body = req.body
+
+  var player_id = body.player_id
+
+  Game.findOne({_id: game_id}, function(err,game){
+    game.players.addToSet( player_id )
+    game.save(function(err,saved){
+      res.send(saved)
+    })
+  })
+})
+
+app.post('/api/game/:game_id/select-king/:player_id', function(req,res){
+  var game_id = req.params.game_id,
+    player_id = req.params.player_id
+
+
+  Game.findOne({_id: game_id}, function(err, game){
+    game.kings.addToSet( player_id )
+    game.save( function(err, saved){
+      res.send(saved)
+    })
+  })
+})
+
+
+app.post('/api/game/:game_id/next-step', function(req,res){
+  var game_id = req.params.game_id
+  console.log(game_id);
+  Game.findOne({_id: game_id}, function(err, game){
+    console.log(err,game);
+    switch(game.status){
+      case 'pending': game.status = 'drafting-king'; break;
+      case 'drafting-king': game.status = 'drafting-team'; break;
+      case 'drafting-team': game.status = 'started'; break;
+      case 'started': game.status = 'completed'; break;
+    }
+    console.log('wtf');
+    game.save( function(err, saved){
+      console.log('comon',err)
+      res.send(saved)
+    })
+  })
+})
+
+app.post('/api/game/:game_id/create-team', function(req,res){
+  var game_id = req.params.game_id,
+    body = req.body
+
+  Game.findOne({_id: game_id}, function(err, game){
+    game.teams.push({
+      name: body.name,
+      king: body.king_id
+    })
+
+    game.save( function(err, saved){
+      res.send(saved)
+    })
+  })
+})
+
+app.post('/api/game/:game_id/team/select-player', function(req, res){
+  var game_id = req.params.game_id,
+    body = req.body
+
+  var team_id = body.team_id,
+    player_id = body.player_id
+
+  Game.findOne({_id: game_id}, function(err, game){
+
+    //check player is in game
+    console.log(player_id, '56c503ff433524385f2fdfbc', game)
+    if( !game.players.some( p_id => p_id == player_id ) ){
+      return res.status(400).send(`Player not in game: ${game_id}`)
+    }
+
+    //check player is not king
+    if( game.kings.some( king_id => king_id == player_id )){
+      return res.status(400).send(`Player is a king`)
+    }
+
+    //check player is not in another team
+    var isInTeam = game.teams.some( team => {
+      return team.players.some( p_id => p_id == player_id)
+    })
+
+    if( isInTeam ){
+      return res.status(400).send('Already in another team')
+    }
+
+    team = game.teams.find( function(team){
+      return team.id == team_id
+    })
+
+    team.players.addToSet(player_id)
+
+    game.save(function(err,saved){
+      res.send(saved);
+    })
+  })
+})
+
+app.post('/api/game/:game_id/team/select-sub', function(req,res){
+  var game_id = req.params.game_id,
+    body = req.body
+
+  var team_id = body.team_id,
+    player_id = body.player_id
+
+  Game.findOne({_id: game_id}, function(err, game){
+
+    //check player is in game
+    console.log(player_id, '56c503ff433524385f2fdfbc', game)
+    if( !game.players.some( p_id => p_id == player_id ) ){
+      return res.status(400).send(`Player not in game: ${game_id}`)
+    }
+
+    //check player is not king
+    if( game.kings.some( king_id => king_id == player_id )){
+      return res.status(400).send(`Player is a king`)
+    }
+
+    //check player is not in another team
+    var isInTeam = game.teams.some( team => {
+      return team.players.some( p_id => p_id == player_id) || team.subs.some( p_id => p_id == player_id )
+    })
+
+    if( isInTeam ){
+      return res.status(400).send('Already in another team')
+    }
+
+    team = game.teams.find( function(team){
+      return team.id == team_id
+    })
+
+    team.subs.addToSet(player_id)
+
+    game.save(function(err,saved){
+      res.send(saved);
+    })
+  })
+})
+
+app.get('/api/game/:game_id/create-subs', function(req,res){
+  var game_id = req.params.game_id
+
+  Game.findOne({_id: game_id}, function(err, game){
+    var rule = game.rule
+
+    map_size_arr = rule.map.split('x')
+    map_size = map_size_arr[0] * map_size_arr[1]
+
+    var player_limit = map_size * (rule.player_size + rule.sub_size)
+
+    if(rule.midIsBaron){
+      player_limit = player_limit - (rule.player_size + rule.sub_size)
+    }
+
+    console.log(game.players_not_in_team());
+
+    test = game.players_not_in_team().reduce(
+      ( teams, player_id, index ) => {
+        var lastItem = teams[teams.length-1]
+        if(lastItem == undefined ){
+          teams.push({
+            name: teams.length + 1,
+            players: [player_id],
+            subs: []
+          })
+          return teams
+        }
+
+
+        if(lastItem.players.length < 5){
+          lastItem.players.push(player_id)
+        }else if(lastItem.subs.length < 1) {
+          lastItem.subs.push(player_id)
+        }else{
+          teams.push({
+            name: teams.length + 1,
+            players: [player_id],
+            subs: []
+          })
+        }
+
+        return teams
+      },
+      []
+    )
+
+    console.log(test)
+  })
+})
+
+app.get('/api/test/create-users', function(req,res){
+  for(var x=0; x < 20; x++){
+    var user = new User({
+      email: `test${x}@test.com`,
+      password: 'asdfasdf'
+    })
+
+    user.save()
+
+  }
+  res.send('done')
+})
+
+app.get('/api/test/join-game/:game_id', function(req,res){
+  var game_id = req.params.game_id
+  Game.findOne({_id: game_id}, function(err, game){
+    User.find(function(err, users){
+      user_ids = users.map( user => user._id )
+      console.log(game)
+      user_ids.forEach( id => {
+        game.players.addToSet(id)
+      })
+
+      game.save(function(err, saved){
+        res.send(saved)
+      })
+    })
+  })
+})
+
+app.get('/api/user/list', function(req,res){
+  User.find( function(err, users){
+    res.send(users)
+  })
+})
+
 
 /**
  * OAuth authentication routes. (Sign in)
