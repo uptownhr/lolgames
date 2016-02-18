@@ -15,9 +15,9 @@
 11. Winning team, gains territory and obsorbs the team
 
 ## Board
-|-X-|-R-|-R-|
-|-R-|-B-|-R-|
-|-R-|-R-|-X-|
+| X | R | R |
+| R | B | R |
+| R | R | X |
 
 
 ## Game Mode
