@@ -15,10 +15,11 @@
 11. Winning team, gains territory and obsorbs the team
 
 ## Board
+|   |   |   |
+|---|:-:|--:|
 | X | R | R |
 | R | B | R |
-| R | R | X |
-
+| R | R | x |
 
 ## Game Mode
 - 2 Kings
