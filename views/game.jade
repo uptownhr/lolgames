@@ -9,6 +9,8 @@ block content
         h2 STATUS
       td
         h2 START DATE
+      td
+        h2 DETAILS
     each g in game
       tr
         td
@@ -17,3 +19,6 @@ block content
           p=g.status
         td
           p=g.startDate
+        td
+          form(action=`/admin/game/${g._id}`)
+            input(type="submit" value="Details")

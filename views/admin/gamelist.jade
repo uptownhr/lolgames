@@ -2,22 +2,22 @@ extends ../layout
 
 block content
   h1 Detailed Game View
-  for g in game
-    .row
-      .col-sm-6
-        h2=g.kings
-        p=g.players
-        p=g.teams
+
 
   table
     tr
+      td
+        h2 NAME
       td
         h2 KINGS
       td
         h2 PLAYERS
       td
         h2 TEAMS
-      for g2 in game
-        td=g2.kings
-        td=g2.players
-        td=g2.teams
+    for g in game
+      tr
+        td=g.name
+        td TBA
+        td TBA
+        td TBA
+
