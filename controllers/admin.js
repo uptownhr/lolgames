@@ -25,10 +25,9 @@ exports.index = function(req, res){
 
 //Display list of games on a table
 exports.display = function (req, res){
-  Game.find(function(err, game){
-    console.log('this is the id: ', game._id);
-    res.render('game', {
-      game: game
+  Game.find(function(err, games){
+    res.render('admin/games', {
+      games: games
     })
   })
 }
@@ -62,11 +61,10 @@ exports.search = function (req, res){
 exports.save = function (req, res){
   let body = req.body
 
-  Game.findOne( (err, game) => {
-    if(!game) game = new Game()
+  Game.findOne( {_id: body._id}, (err, game) => {
+    if(!game) game = new Game(body)
 
-    _.assign(game, body)
-
+    console.log(game);
     game.save( (err,saved) => {
       if (err) return res.send(err)
       res.send(saved)

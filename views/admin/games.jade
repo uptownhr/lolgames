@@ -1,4 +1,4 @@
-extends admin/admin_layout
+extends admin_layout
 
 block content
   table(border='10px solid black', style = 'width: 100%')
@@ -11,7 +11,7 @@ block content
         h2 START DATE
       td
         h2 DETAILS
-    each g in game
+    each g in games
       tr
         td
           p=g.name
