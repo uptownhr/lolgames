@@ -33,21 +33,15 @@ exports.display = function (req, res){
 }
 
 exports.create = function (req, res){
-  Game.findOne( (err,game) =>{
-
-    if(!game){
-    game = new Game()
-  }
-
+  var game = new Game()
   let data = game.toJSON()
 
   delete data._id
   delete data.__v
 
-  res.render('admin/template/index', {
+  res.render('admin/template/gameTemp', {
     data: data,
   })
-})
 }
 
 exports.search = function (req, res){
@@ -72,11 +66,11 @@ exports.save = function (req, res){
   Game.findOne( (err, game) => {
     if(!game) game = new Game()
 
-  _.assign(game, body)
+    _.assign(game, body)
 
-  game.save( (err,saved) => {
-    res.send(saved)
-})
-})
+    game.save( (err,saved) => {
+      res.send(saved)
+    })
+  })
 }
 

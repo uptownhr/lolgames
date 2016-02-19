@@ -10,7 +10,7 @@ var teamSchema = new Schema({
 })
 
 var gameSchema = new Schema({
-  name: {type: String},
+  name: {type: String, default: ''},
   status: {
     type: String,
     enum: [
@@ -21,7 +21,7 @@ var gameSchema = new Schema({
       'completed'],
     default: 'pending'
   },
-  startDate: {type: Date},
+  startDate: {type: Date, default: Date.now},
   players: [{type: Schema.Types.ObjectId, ref: 'User'}],
   rule: {
     map: {type: 'String', default: '3x3'},
