@@ -155,6 +155,13 @@ app.post('/account/profile', passportConf.isAuthenticated, userController.postUp
 app.post('/account/password', passportConf.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
+app.post('/createTeam', passportConf.isAuthenticated, userController.createTeam);
+app.get('/inviteTeam', passportConf.isAuthenticated, userController.inviteTeam);
+app.get('/editTeam/:id', passportConf.isAuthenticated, userController.editTeam);
+app.post('/sendInvite/', passportConf.isAuthenticated, userController.sendInvite);
+app.get('/account/dashboard', passportConf.isAuthenticated, userController.dashboard);
+
+
 
 /**
  * Admin Routes
@@ -176,7 +183,7 @@ app.post('/admin/game/save', passportConf.isAdmin, adminController.save)//Takes 
 /**
  * Game Routes
  */
-
+app.get('game/:game_id', adminController.detailView)
 
 /**
  * Template admin routes

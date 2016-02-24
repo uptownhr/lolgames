@@ -4,6 +4,8 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var passport = require('passport');
 var User = require('../models/User');
+var Team = require('../models/Team');
+var sendgrid = require('sendgrid')('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');
 
 /**
  * GET /login
@@ -382,3 +384,68 @@ exports.postForgot = function(req, res, next) {
     res.redirect('/forgot');
   });
 };
+
+exports.createTeam = function(req, res, next){
+  var id = req.user._id;
+  var nTeam = new Team({
+    name: req.body.teamName,
+    players: [id]
+  });
+
+  nTeam.save(function(err, save){
+    if(err) console.log("why does this happen", err);
+    console.log("is this undefined: ", save);
+    res.redirect('/account/dashboard');
+  })
+}
+
+exports.editTeam = function(req, res){
+  var id = req.user._id;
+  User.find(function(err, user){
+    Team.findOne({id: req.params._id}, function(err, team){
+      if(err) console.log("why did this fail? ", err);
+      res.render('editTeam', {
+        playa: user,
+        teams: team
+      })
+    })
+  })
+
+}
+
+exports.sendInvite = function(req, res){
+  var invitation = {
+    to: req.body.email,
+    from: 'joebanez@gmail.com',
+    subject: "Just wanted to say",
+    text: "I will fuck you up boy"
+  };
+  sendgrid.send(invitation, function (err, json){
+    if (err) {console.error(err);}
+    console.log(json);
+  });
+  res.redirect('/inviteTeam')
+}
+
+
+exports.inviteTeam = function(req, res){
+  User.find(function(err, user){
+    res.render('account/inviteTeam', {
+      users: user
+    })
+  })
+}
+
+exports.dashboard = function(req, res){
+  var id = req.user._id;
+  console.log("this is the id being searched: ", id);
+  Team.find({players: { $all: [id]}}, function(err, team){
+    console.log("this is team info: ", team);
+    res.render('dashboard', {
+      teams: team
+    })
+  })
+}
+
+
+

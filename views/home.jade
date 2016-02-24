@@ -2,22 +2,15 @@ extends layout
 
 block content
   h1 LoL Games Starter
+  tr
+    td
+      h2 NAME
+    td
+      h2 STATUS
+    td
+      h2 START DATE
   for g in game
-    .row
-      .col-sm-6
-        h2=g.name
-        p=g.status
-        p=g.startDate
-
-  table
     tr
-      td
-        h2 NAME
-      td
-        h2 STATUS
-      td
-        h2 START DATE
-      for g2 in game
-        td=g2.name
-        td=g2.status
-        td=g2.startDate
+      td=g.name
+      td=g.status
+      td=g.startDate

@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  .page-header
+    h3 Team Information
+  for t in teams
+    form.form-horizontal(action='/saveTeam', method='POST')
+      input(type='hidden', name='_csrf', value=_csrf)
+      .form-group
+        label.col-sm-3.control-label(for='teamName') Team Name
+        .col-sm-7
+          input.form-control(type='text', name='teamName', id='teamName', value='#{t.name}')
+      .form-group
+        label.col-sm-3.control-label(for='name') Name
+        .col-sm-7
+          input.form-control(type='text', name='name', id='name', value='#{user.profile.name}')
+
+      .form-group
+        .col-sm-offset-3.col-sm-4
+          button.btn.btn.btn-primary(type='submit')
+            i.fa.fa-pencil
+            | Update Profile
+
+  div.players
+    h2 list of available players
+    table
+      tr
+        td Summoner Name
+      tr
+        td Role/Position ADC/Sup/Jung/Mid/Top
+      tr
+        td Ranking/Class: S/G/P/D/M/C
+      for p in playa
+        tr
+          td=p.profile.name
+        tr
+          td=p.role
+        tr
+          td=p.class

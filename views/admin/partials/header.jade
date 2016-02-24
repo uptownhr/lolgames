@@ -25,6 +25,8 @@
         if !user
           li(class=title=='Login'?'active':undefined)
             a(href='/login') Login
+          li(class=title=='Admin'?'active':undefined)
+            a(href='/admin') Admin
           li(class=title=='Create Account'?'active':undefined)
             a(href='/signup') Create Account
         else
@@ -40,5 +42,6 @@
               li
                 a(href='/account') My Account
               li.divider
-              li
+                a(href='/admin') Admin
+              li.divider
                 a(href='/logout') Logout

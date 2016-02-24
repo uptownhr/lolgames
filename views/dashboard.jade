@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 LoL Games User Dashboard
+  div.team
+    h2 Associated with following teams:
+    for t in teams
+      div
+        p=t.name
+        a(href=`/editTeam/${t._id}`) Edit Team
+        br
+        a(href='/inviteTeam/') Invite Player to LoL Games

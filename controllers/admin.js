@@ -54,8 +54,9 @@ exports.search = function (req, res){
   var id = req.params.game_id;
   console.log('this is the id: ', id);
   Game.find({_id: id}, function(err, game){
-    res.render('admin/gamelist', {
-      game: game,
+    var data = game.toJSON()
+    res.render('admin/gameTemp', {
+      data: data,
     })
   })
 }
@@ -74,3 +75,10 @@ exports.save = function (req, res){
   })
 }
 
+
+exports.detailView = function (req, res){
+  var id = req.params.game_id;
+  Game.findOne({_id: id}, function (req, res){
+    res.render('admin/gamelist')
+  })
+}

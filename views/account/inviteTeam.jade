@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  h1 LoL Games User Invite
+  div.invite
+    form.form-horizontal(action='/sendInvite', method='POST')
+      input(type='hidden', name='_csrf', value=_csrf)
+      .form-group
+        label.col-sm-3.control-label(for='email') Email
+        .col-sm-7
+          input.form-control(type='email', name='email', id='email')
+      .form-group
+        .col-sm-offset-3.col-sm-4
+          button.btn.btn.btn-primary(type='submit')
+            i.fa.fa-pencil
+            | Send Invite

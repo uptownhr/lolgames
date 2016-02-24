@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "hackathon-starter",
   "version": "3.4.1",
   "repository": {
@@ -56,6 +56,7 @@
     "passport-twitter": "^1.0.4",
     "paypal-rest-sdk": "^1.6.8",
     "request": "^2.69.0",
+    "sendgrid": "^1.9.2",
     "serve-favicon": "^2.3.0",
     "stripe": "^4.4.0",
     "tumblr.js": "^0.0.7",
